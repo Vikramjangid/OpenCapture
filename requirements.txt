@@ -1,0 +1,6 @@
+PySide6
+mss
+Pillow
+pyautogui
+numpy
+opencv-python
