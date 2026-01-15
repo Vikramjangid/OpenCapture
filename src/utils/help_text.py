@@ -1,5 +1,5 @@
 
-APP_TITLE = "Snagit Clone"
+APP_TITLE = "OpenCapture"
 VERSION = "1.0.0"
 
 FAQ_TEXT = """
@@ -36,5 +36,5 @@ ABOUT_TEXT = f"""
 <h2>{APP_TITLE}</h2>
 <p>Version {VERSION}</p>
 <p>A lightweight, fast screen capture and annotation tool.</p>
-<p>Developed by <b>Vikram Jangid</b> - Agentic Coding Demo</p>
+<p>Developed by <b>Vikram Jangid</b> (vikramjangid11@gmail.com) - Agentic Coding Demo</p>
 """

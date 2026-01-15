@@ -8,7 +8,7 @@ class Dashboard(QMainWindow):
     # ... (init methods omitted for brevity in tool call, will target specific lines)
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Snagit Clone By - Vikram Jangid")
+        self.setWindowTitle("OpenCapture - Developed by : Vikram Jangid (vikramjangid11@gmail.com)")
         self.resize(400, 500)
         self.init_ui()
         self.init_tray()
@@ -22,7 +22,7 @@ class Dashboard(QMainWindow):
         layout.setSpacing(15)
 
         # Header
-        header = QLabel("Snagit Clone")
+        header = QLabel("OpenCapture")
         header.setStyleSheet("font-size: 24px; font-weight: bold; color: #333;")
         layout.addWidget(header, alignment=Qt.AlignCenter)
 

@@ -1,4 +1,4 @@
-# Snagit Clone
+# OpenCapture
 
 A powerful screen capture and editing tool built with Python and PySide6.
 

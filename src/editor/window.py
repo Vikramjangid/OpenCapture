@@ -6,7 +6,7 @@ from .canvas import EditorCanvas
 class EditorWindow(QMainWindow):
     def __init__(self, pil_image=None):
         super().__init__()
-        self.setWindowTitle("Snagit Editor by - Vikram Jangid")
+        self.setWindowTitle("Snagit Editor - Developed by : Vikram Jangid (vikramjangid11@gmail.com)")
         self.resize(1200, 800)
         
         self.canvas = EditorCanvas()
