@@ -37,7 +37,8 @@ class EditorCanvas(QGraphicsView):
         self.qimage = ImageQt(self.image)
         
         pixmap = QPixmap.fromImage(self.qimage)
-        self.scene.addPixmap(pixmap)
+        self.bg_item = self.scene.addPixmap(pixmap)
+        self.bg_item.setZValue(-100) # Ensure it's always at the bottom
         self.setSceneRect(0, 0, pixmap.width(), pixmap.height())
 
     def resize_canvas(self, w, h):
@@ -98,10 +99,14 @@ class EditorCanvas(QGraphicsView):
             self.current_tool = "none" 
             self.setDragMode(QGraphicsView.ScrollHandDrag)
             
+        elif self.current_tool == "blur":
+            from .tools import DraggableRectItem
+            self.current_item = DraggableRectItem(sp.x(), sp.y(), 0, 0)
+            self.current_item.setPen(QPen(QColor(0, 120, 215), 1, Qt.DashLine))
+            self.scene.addItem(self.current_item)
+            
         elif self.current_tool == "crop":
             # Just like rectangle but with visual difference
-            from .dialogs import CropSelector
-            # Convert to rect item for visual
             from .tools import DraggableRectItem
             self.current_item = DraggableRectItem(sp.x(), sp.y(), 0, 0)
             self.current_item.setPen(QPen(QColor(255, 255, 255), 2, Qt.DashLine))
@@ -114,7 +119,7 @@ class EditorCanvas(QGraphicsView):
         if hasattr(self, 'current_item') and self.current_item:
             sp = self.mapToScene(event.pos())
             
-            if self.current_tool in ["rectangle", "blur"]:
+            if self.current_tool in ["rectangle", "blur", "crop"]:
                 x = min(self.start_point.x(), sp.x())
                 y = min(self.start_point.y(), sp.y())
                 w = abs(self.start_point.x() - sp.x())
@@ -129,44 +134,51 @@ class EditorCanvas(QGraphicsView):
     def mouseReleaseEvent(self, event):
         if hasattr(self, 'current_item') and self.current_item:
             if self.current_tool == "crop":
-                rect = self.current_item.rect()
+                rect = self.current_item.rect().normalized()
                 self.scene.removeItem(self.current_item)
                 
-                # Perform Crop
-                # We need to crop the SCENE rect and the BACKGROUND image.
-                # Just setting scene rect is usually enough for display, but for saving we want to crop the image.
+                if rect.width() > 5 and rect.height() > 5:
+                    # 1. Physical crop of the background pixmap
+                    if hasattr(self, 'bg_item') and self.bg_item:
+                        pix = self.bg_item.pixmap()
+                        
+                        # Calculate the intersection with the actual image bounds
+                        # to avoid out-of-bounds errors in copy()
+                        image_bounds = self.bg_item.pixmap().rect()
+                        crop_rect = rect.toRect().intersected(image_bounds)
+                        
+                        if not crop_rect.isEmpty():
+                            cropped_pix = pix.copy(crop_rect)
+                            self.bg_item.setPixmap(cropped_pix)
+                            self.bg_item.setPos(0, 0)
+                            
+                            # 2. Adjust all other items
+                            # They must move by the offset of the crop
+                            offset = crop_rect.topLeft()
+                            for item in self.scene.items():
+                                if item != self.bg_item:
+                                    item.setPos(item.pos() - offset)
+                            
+                            # 3. Update Scene Rect
+                            self.setSceneRect(0, 0, cropped_pix.width(), cropped_pix.height())
                 
-                # 1. Update Scene Rect
-                # Normalize rect to handle negative width/height
-                normalized_rect = rect.normalized()
-                
-                # Check for validity
-                if normalized_rect.width() > 10 and normalized_rect.height() > 10:
-                    self.setSceneRect(normalized_rect)
-                    # We should also crop the background image to save memory/cleanliness?
-                    # Or just rely on render(scene_rect) which we do in save_image!
-                    # Reset tool
-                    self.current_tool = "none"
-                    self.setDragMode(QGraphicsView.ScrollHandDrag)
+                self.current_tool = "none"
+                self.setDragMode(QGraphicsView.ScrollHandDrag)
                 
             elif self.current_tool == "blur":
-                # Finalize blur
-                rect = self.current_item.rect()
-                # Remove the selector
+                rect = self.current_item.rect().normalized()
                 self.scene.removeItem(self.current_item)
                 
                 # Create actual blur item
                 from .tools import BlurItem
-                # Get the whole scene pixmap? Or assuming the bg is the first item?
-                # We need the underlying image. 
-                # Assumption: The first item in the scene is the background Pixmap
-                items = self.scene.items()
-                bg_item = items[-1] # Background is usually at the bottom (-1 in painter's algo?)
-                if isinstance(bg_item, QGraphicsPixmapItem):
-                    blur_item = BlurItem(rect, bg_item.pixmap())
-                    # Push Command
+                # Find background pixmap to sample from
+                if hasattr(self, 'bg_item') and self.bg_item:
+                    blur_item = BlurItem(rect, self.bg_item.pixmap())
                     command = AddItemCommand(self.scene, blur_item)
                     self.undo_stack.push(command)
+                
+                self.current_tool = "none"
+                self.setDragMode(QGraphicsView.ScrollHandDrag)
             
             elif self.current_tool in ["rectangle", "arrow"]:
                 # Push Command for the item we just drew

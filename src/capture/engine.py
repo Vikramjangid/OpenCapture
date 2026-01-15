@@ -1,6 +1,7 @@
 import logging
 import os
-from PIL import ImageGrab, Image
+import mss
+from PIL import Image
 
 # Setup Logger
 log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'debug_capture.log')
@@ -8,14 +9,24 @@ logging.basicConfig(filename=log_file, level=logging.DEBUG, format='%(asctime)s 
 
 class CaptureEngine:
     def __init__(self):
-        pass # MSS no longer needed
+        pass
 
-    def capture_fullscreen(self):
-        """Captures all screens combined."""
+    def capture_fullscreen(self, monitor_index=None):
+        """Captures all screens combined or a specific monitor by index."""
         try:
-             # all_screens=True requires a relatively recent Pillow (9.1+)
-             img = ImageGrab.grab(all_screens=True)
-             return img
+            with mss.mss() as sct:
+                if monitor_index is not None:
+                    # sct.monitors[0] is all monitors, so screen 1 is sct.monitors[1]
+                    monitor = sct.monitors[monitor_index + 1]
+                    logging.info(f"Capturing monitor {monitor_index + 1}: {monitor}")
+                else:
+                    # All monitors
+                    monitor = sct.monitors[0]
+                    logging.info(f"Capturing all monitors: {monitor}")
+                
+                sct_img = sct.grab(monitor)
+                img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+                return img
         except Exception as e:
             logging.error(f"Fullscreen Capture Error: {e}", exc_info=True)
             print(f"Fullscreen Capture Error: {e}")
@@ -27,13 +38,16 @@ class CaptureEngine:
             raise ValueError(f"Invalid capture dimensions: {width}x{height}")
             
         try:
-            bbox = (int(left), int(top), int(left + width), int(top + height))
-            logging.info(f"ImageGrab capturing bbox: {bbox}")
+            # MSS uses logical coordinates which match PySide's global screen coordinates
+            monitor = {"top": int(top), "left": int(left), "width": int(width), "height": int(height)}
+            logging.info(f"MSS capturing region: {monitor}")
             
-            # Capture using Pillow's ImageGrab (GDI based on Windows)
-            # This is robust against the stride issues we saw with mss
-            img = ImageGrab.grab(bbox=bbox, all_screens=True)
-            return img
+            with mss.mss() as sct:
+                logging.debug(f"All monitors: {sct.monitors}")
+                sct_img = sct.grab(monitor)
+                img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+                logging.info(f"Captured image size: {img.size}")
+                return img
             
         except Exception as e:
             logging.error(f"Capture Error: {e}", exc_info=True)

@@ -34,12 +34,23 @@ class Dashboard(QMainWindow):
         self.btn_capture.clicked.connect(self.start_capture)
         layout.addWidget(self.btn_capture)
 
-        # Capture Full Screen Button
-        self.btn_full_capture = QPushButton("Capture Full Screen")
-        self.btn_full_capture.setObjectName("primarySuccess") # For styling
-        self.btn_full_capture.setFixedHeight(50)
-        self.btn_full_capture.clicked.connect(self.start_full_capture)
-        layout.addWidget(self.btn_full_capture)
+        # Dynamic Full Screen Buttons
+        from PySide6.QtGui import QGuiApplication
+        screens = QGuiApplication.screens()
+        for i, screen in enumerate(screens):
+            btn = QPushButton(f"Capture {screen.name()}")
+            btn.setObjectName("primarySuccess")
+            btn.setFixedHeight(50)
+            btn.clicked.connect(lambda checked=False, idx=i: self.start_full_capture(idx))
+            layout.addWidget(btn)
+        
+        # All screens capture
+        if len(screens) > 1:
+            btn_all = QPushButton("Capture All Screens")
+            btn_all.setObjectName("primarySuccess")
+            btn_all.setFixedHeight(50)
+            btn_all.clicked.connect(lambda checked=False: self.start_full_capture(None))
+            layout.addWidget(btn_all)
 
         # Help / FAQ Button
         self.btn_help = QPushButton("Quick Start Guide / FAQ")
@@ -97,16 +108,34 @@ class Dashboard(QMainWindow):
 
     def start_capture(self):
         self.hide() # Hide dashboard
-        # Use a slight delay or just proceed? PySide usually handles hiding quickly.
         QApplication.processEvents()
         
-        # Open Overlay
+        # Open Overlay for each screen
         from capture.region import RegionSelectionOverlay
-        self.overlay = RegionSelectionOverlay()
-        self.overlay.selection_made.connect(self.on_selection_made)
-        self.overlay.show()
+        from PySide6.QtGui import QGuiApplication
+        
+        self.overlays = []
+        for screen in QGuiApplication.screens():
+            overlay = RegionSelectionOverlay(screen)
+            overlay.selection_made.connect(self.on_selection_made)
+            overlay.selection_updated.connect(self.on_selection_updated)
+            overlay.canceled.connect(self.on_capture_canceled)
+            overlay.show()
+            self.overlays.append(overlay)
 
-    def start_full_capture(self):
+    def on_selection_updated(self, rect):
+        for overlay in self.overlays:
+            if overlay != self.sender():
+                overlay.sync_selection(rect, True)
+
+    def on_capture_canceled(self):
+        if hasattr(self, 'overlays'):
+            for overlay in self.overlays:
+                overlay.close()
+            self.overlays = []
+        self.show()
+
+    def start_full_capture(self, monitor_index=None):
         from capture.engine import CaptureEngine
         from editor.window import EditorWindow
         import time
@@ -119,7 +148,7 @@ class Dashboard(QMainWindow):
 
         try:
             engine = CaptureEngine()
-            img = engine.capture_fullscreen()
+            img = engine.capture_fullscreen(monitor_index)
             
             self.editor = EditorWindow(img)
             self.editor.show()
@@ -134,10 +163,11 @@ class Dashboard(QMainWindow):
         import time
         from PySide6.QtWidgets import QApplication, QMessageBox
         
-        # Ensure overlay is fully closed and screen repainted
-        # Force overlay to close if it hasn't already (though it should have in mouseRelease)
-        if hasattr(self, 'overlay') and self.overlay.isVisible():
-            self.overlay.close()
+        # Ensure ALL overlays are closed
+        if hasattr(self, 'overlays'):
+            for overlay in self.overlays:
+                overlay.close()
+            self.overlays = []
             
         QApplication.processEvents()
         time.sleep(0.2) # Increased buffer for compositor (0.1 was borderline)
@@ -148,15 +178,20 @@ class Dashboard(QMainWindow):
                 print("Skipping invalid capture dimensions")
                 return
             
-            # Handle DPI Scaling (Logical vs Physical pixels)
-            screen = QApplication.primaryScreen()
-            dpr = screen.devicePixelRatio()
+            # On macOS, MSS expects logical coordinates.
+            # PySide also provides logical coordinates for widget geometry/events.
             
-            # Scale coordinates
-            x = int(x * dpr)
-            y = int(y * dpr)
-            w = int(w * dpr)
-            h = int(h * dpr)
+            # Scale coordinates only if NOT on macOS (e.g. Windows might need this)
+            if sys.platform != "darwin":
+                screen = QApplication.primaryScreen()
+                dpr = screen.devicePixelRatio()
+                print(f"Non-macOS platform detected: Scaling by DPR={dpr}")
+                x = int(x * dpr)
+                y = int(y * dpr)
+                w = int(w * dpr)
+                h = int(h * dpr)
+            
+            print(f"Final capture coordinates: ({x}, {y}, {w}, {h})")
 
             # Capture
             engine = CaptureEngine()
@@ -166,6 +201,8 @@ class Dashboard(QMainWindow):
             self.editor = EditorWindow(img)
             self.editor.show()
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             QMessageBox.critical(self, "Capture Failed", f"An error occurred during capture:\n{str(e)}")
             print(f"Capture Error: {e}")
         

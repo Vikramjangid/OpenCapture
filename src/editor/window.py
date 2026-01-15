@@ -112,7 +112,7 @@ class EditorWindow(QMainWindow):
             image.fill(Qt.transparent)
             
             painter = QPainter(image)
-            self.canvas.scene.render(painter)
+            self.canvas.scene.render(painter, QRectF(image.rect()), scene_rect)
             painter.end()
             
             image.save(filename)
