@@ -33,7 +33,7 @@ jobs:
         pyinstaller --noconfirm --onedir --windowed --name "OpenCapture" --paths src src/main.py
 
     - name: Compile Installer with Inno Setup
-      uses: Minionguyjosh/inno-setup-action@v1.2.2
+      uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
       with:
         path: setup.iss
 
