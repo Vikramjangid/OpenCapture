@@ -46,8 +46,8 @@ OpenCapture offers a seamless experience for capturing screenshots, annotating t
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/Vikramjangid/ImageCapureSnagitClone.git
-    cd ImageCapureSnagitClone
+    git clone https://github.com/Vikramjangid/OpenCapture.git
+    cd OpenCapture
     ```
 
 2.  **Install Dependencies**

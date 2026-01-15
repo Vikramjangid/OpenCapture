@@ -4,7 +4,7 @@
 #define MyAppName "OpenCapture"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Vikram Jangid"
-#define MyAppURL "https://github.com/Vikramjangid/ImageCapureSnagitClone"
+#define MyAppURL "https://github.com/Vikramjangid/OpenCapture"
 #define MyAppExeName "OpenCapture.exe"
 
 [Setup]
