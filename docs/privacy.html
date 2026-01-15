@@ -7,37 +7,83 @@
     <title>Privacy Policy - OpenCapture</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="assets/icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #111;
+        }
+
+        .policy-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #0066cc;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="container" style="max-width: 800px; padding: 60px 20px;">
-        <a href="index.html" style="color: var(--primary); text-decoration: none;">&larr; Back to Home</a>
-        <h1 style="margin: 30px 0;">Privacy Policy</h1>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Home</a>
 
-        <p style="margin-bottom: 20px; color: var(--text-gray);">Last Updated: January 2026</p>
+        <header>
+            <h1>Privacy Policy</h1>
+            <p>Last updated: January 2026</p>
+        </header>
 
-        <h3>1. Data Collection</h3>
-        <p style="margin-bottom: 20px; color: var(--text-gray);">
-            OpenCapture is a local-first application. We do not collect, store, or transmit any personal data, images,
-            or usage statistics to any external servers.
-        </p>
+        <div class="policy-card">
+            <h2>Your Privacy is Our Priority</h2>
+            <p>OpenCapture is an <strong>offline-first</strong> application. We believe your data belongs to you.</p>
 
-        <h3>2. Local Storage</h3>
-        <p style="margin-bottom: 20px; color: var(--text-gray);">
-            All screenshots and recordings are stored locally on your device in the location you select.
-        </p>
+            <h3>Data Collection</h3>
+            <p>We do not collect, store, transmit, or sell any of your personal data, screen captures, or usage
+                statistics. Everything you capture and edit stays 100% on your local machine.</p>
 
-        <h3>3. Updates</h3>
-        <p style="margin-bottom: 20px; color: var(--text-gray);">
-            The application may check GitHub Releases for updates if you manually navigate to the download page, but the
-            app itself does not auto-update or phone home.
-        </p>
+            <h3>Network Connectivity</h3>
+            <p>The application works completely offline. It does not make any background network requests to third-party
+                servers for tracking or analytics.</p>
 
-        <h3>4. Contact</h3>
-        <p style="margin-bottom: 20px; color: var(--text-gray);">
-            If you have any questions, please contact the developer via the GitHub repository.
-        </p>
+            <h3>Updates</h3>
+            <p>You may manually visit our GitHub repository to check for and download updates. The application does not
+                auto-update without your permission.</p>
+
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+            <p>If you have any questions, you can check our <a href="https://github.com/Vikramjangid/OpenCapture">GitHub
+                    repository</a>.</p>
+        </div>
     </div>
 
 </body>

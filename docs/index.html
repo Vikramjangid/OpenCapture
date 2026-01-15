@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="icon" type="image/png" href="assets/icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
     <!-- Header -->
@@ -29,8 +31,25 @@
     <section class="hero">
         <div class="container hero-content">
             <div class="hero-text">
-                <h1>Capture. Annotate. Share.</h1>
-                <p>The open-source screen capture tool designed for professionals. Fast, lightweight, and powerful.</p>
+                <h1>OpenCapture — a fast, open-source alternative to Snagit for Windows & macOS.</h1>
+                <p>OpenCapture is a free, open-source screen capture and annotation tool designed for professionals.
+                    Fast, lightweight, and powerful.</p>
+
+                <!-- Trust Signals -->
+                <div class="trust-signals" style="margin: 20px 0; font-size: 0.95rem; opacity: 0.9;">
+                    <ul style="list-style: none; padding: 0; margin-bottom: 15px;">
+                        <li style="margin-bottom: 5px;">✔ Open Source – Code available on GitHub</li>
+                        <li style="margin-bottom: 5px;">✔ No Ads, No Tracking</li>
+                        <li style="margin-bottom: 5px;">✔ Offline-First</li>
+                        <li style="margin-bottom: 5px;">✔ MIT License</li>
+                    </ul>
+                    <div>
+                        <a href="https://github.com/Vikramjangid/OpenCapture/blob/main/LICENSE" target="_blank"
+                            style="text-decoration: underline; margin-right: 15px; color: inherit;">View License</a>
+                        <a href="privacy.html" style="text-decoration: underline; color: inherit;">Privacy Policy</a>
+                    </div>
+                </div>
+
                 <div class="hero-buttons">
                     <a href="#download" class="btn-primary">Get Started</a>
                     <a href="https://github.com/Vikramjangid/OpenCapture" class="btn-secondary">View Source</a>
@@ -59,6 +78,33 @@
                     <h3>⚡ Fast Sharing</h3>
                     <p>Copy to clipboard (Ctrl+C) or save to file (Ctrl+S) instantly. Optimized for workflow.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visuals / Gallery Section -->
+    <section id="gallery" class="gallery" style="padding: 4rem 0; background-color: #f9fafb; color: #1f2937;">
+        <div class="container" style="text-align: center;">
+            <h2 style="margin-bottom: 2rem;">See It In Action</h2>
+
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <div class="gallery-item">
+                    <h3 style="margin-bottom: 1rem;">Capture Selection</h3>
+                    <img src="assets/CaptureSelection.png" alt="Capture Selection"
+                        style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                </div>
+                <div class="gallery-item">
+                    <h3 style="margin-bottom: 1rem;">Editor & Annotation</h3>
+                    <img src="assets/Editor&Annotation.png" alt="Editor & Annotation"
+                        style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+
+            <div class="workflow-gif">
+                <h3 style="margin-bottom: 1rem;">Workflow: Capture → Annotate → Save</h3>
+                <img src="assets/WorkflowCaptureAnnotateSave.gif" alt="Workflow Demo"
+                    style="width: 100%; max-width: 800px; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             </div>
         </div>
     </section>
@@ -94,4 +140,5 @@
     </footer>
 
 </body>
+
 </html>
