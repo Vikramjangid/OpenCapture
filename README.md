@@ -11,6 +11,14 @@ OpenCapture offers a seamless experience for capturing screenshots, annotating t
 - **Full Screen Capture**: Instantly capture the entire desktop environment.
 - **Multi-Monitor Support**: Seamlessly capture specific monitors or all screens at once.
 
+### 🎥 Video Recording
+- **Screen Recording**: Record your entire screen or a specific region.
+- **Webcam Overlay**: Add a Picture-in-Picture (PIP) rounded webcam overlay.
+- **Audio Capture**: Record system audio (platform dependent) and microphone input.
+- **Cursor Effects**: Toggle mouse cursor visibility in recordings.
+- **Dynamic FPS**: Automatically detects and matches your screen's refresh rate (e.g., 60Hz, 144Hz) for smooth playback.
+- **Sync Correction**: "Frame Duplication" technology ensuring perfect Audio/Video sync on any hardware.
+
 ### 🎨 Powerful Editor
 - **Annotation Tools**:
     - **Arrow**: Draw attention to specific details.
@@ -25,6 +33,13 @@ OpenCapture offers a seamless experience for capturing screenshots, annotating t
 ### 📤 Sharing & Output
 - **Clipboard Integration**: Copy edited images directly to your clipboard (Ctrl+C) for pasting into Teams, Slack, or emails.
 - **File Saving**: Save captures locally in high-quality formats (PNG, JPG) (Ctrl+S).
+- **Video Export**: Export recordings as **MP4** (with optional single-file merge using FFmpeg) or **GIF**.
+
+### 🎬 Video Editor
+- **Review**: Playback your recording with audio.
+- **Trim**: Set start and end points to trim unwanted footage.
+- **Frame-by-Frame**: Step through video frame-by-frame for precise analysis.
+- **Export Options**: Save as MP4, GIF, or extract audio.
 
 ## ⌨️ Keyboard Shortcuts
 

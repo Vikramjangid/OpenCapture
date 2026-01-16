@@ -4,3 +4,5 @@ Pillow
 pyautogui
 numpy
 opencv-python
+sounddevice
+soundfile
