@@ -29,10 +29,8 @@ ENV/
 captures/
 *.mp4
 *.wav
-*.gif
 
 # Captures
 captures/
 *.mp4
 *.wav
-*.gif
