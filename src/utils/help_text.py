@@ -36,6 +36,14 @@ FAQ_TEXT = """
     <li><b>Save (Ctrl+S):</b> Save your capture as a file to your local drive.</li>
 </ul>
 
+<h3>4. Video Recording</h3>
+<ul>
+    <li><b>Record Screen:</b> Toggle between Screen/Region mode.</li>
+    <li><b>Audio:</b> Records Microphone (default) and System Audio.</li>
+    <li><b>Webcam:</b> Enable Picture-in-Picture webcam overlay.</li>
+    <li><b>Editor:</b> Trim, Playback, and Export your video to MP4 or GIF.</li>
+</ul>
+
 <hr style="border: 1px solid #444; margin: 15px 0;">
 
 <h3>Keyboard Shortcuts</h3>
