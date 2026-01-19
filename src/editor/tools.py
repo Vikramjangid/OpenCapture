@@ -6,19 +6,26 @@ class DrawingTool:
     NONE = 0
     RECTANGLE = 1
     ARROW = 2
+    CIRCLE = 3
+    LINE = 4
+
 
 class DraggableRectItem(QGraphicsRectItem):
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, color=QColor("red"), width=3):
         super().__init__(x, y, w, h)
-        self.setPen(QPen(QColor("red"), 3))
+        self.setPen(QPen(color, width))
         self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
 
+
 class ArrowItem(QGraphicsPathItem):
-    def __init__(self, start_point, end_point):
+    def __init__(self, start_point, end_point, color=QColor("red"), width=3):
         super().__init__()
-        self.setPen(QPen(QColor("red"), 3))
+        self.color = color
+        self.width = width
+        self.setPen(QPen(color, width))
         self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
         self.update_arrow(start_point, end_point)
+
 
     def update_arrow(self, start, end):
         path = QPainterPath()
@@ -46,14 +53,29 @@ def args_to_point(angle, length):
     return QPointF(math.cos(angle) * length, math.sin(angle) * length)
 
 class TextItem(QGraphicsTextItem):
-    def __init__(self, text="Double Click to Edit", position=None):
+    def __init__(self, text="Double Click to Edit", position=None, color=QColor("red")):
         super().__init__(text)
         if position:
             self.setPos(position)
-        self.setDefaultTextColor(QColor("red"))
+        self.setDefaultTextColor(color)
         self.setFont(QFont("Arial", 14, QFont.Bold))
         self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable | QGraphicsItem.ItemIsFocusable)
         self.setTextInteractionFlags(Qt.TextEditorInteraction) # Allows editing
+
+from PySide6.QtWidgets import QGraphicsEllipseItem, QGraphicsLineItem
+
+class CircleItem(QGraphicsEllipseItem):
+    def __init__(self, x, y, w, h, color=QColor("red"), width=3):
+        super().__init__(x, y, w, h)
+        self.setPen(QPen(color, width))
+        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
+
+class LineItem(QGraphicsLineItem):
+    def __init__(self, x1, y1, x2, y2, color=QColor("red"), width=3):
+        super().__init__(x1, y1, x2, y2)
+        self.setPen(QPen(color, width))
+        self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
+
 
 class BlurItem(QGraphicsPixmapItem):
     def __init__(self, rect, source_pixmap):

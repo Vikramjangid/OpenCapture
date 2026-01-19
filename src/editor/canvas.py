@@ -24,6 +24,8 @@ class EditorCanvas(QGraphicsView):
         self.setScene(self.scene)
         self.setBackgroundBrush(Qt.darkGray)
         self.undo_stack = QUndoStack(self)
+        self.current_color = QColor("red")
+        self.current_line_width = 3
         logging.info("EditorCanvas initialized.")
         
     def set_image(self, pil_image):
@@ -60,6 +62,12 @@ class EditorCanvas(QGraphicsView):
              # Note: Other items (arrows/text) won't scale automatically unless we iterate and scale them too.
              # MVP: Only scales background. User can move items.
 
+    def set_drawing_color(self, color):
+        self.current_color = color
+        
+    def set_drawing_width(self, width):
+        self.current_line_width = width
+
     def set_current_tool(self, tool_mode):
         self.current_tool = tool_mode
         if tool_mode != "none":
@@ -77,20 +85,30 @@ class EditorCanvas(QGraphicsView):
         logging.info(f"Mouse Press at {sp}, Tool: {self.current_tool}")
         self.current_item = None
         
+        
         if self.current_tool == "rectangle":
             from .tools import DraggableRectItem
-            self.current_item = DraggableRectItem(sp.x(), sp.y(), 0, 0)
-            # self.scene.addItem(self.current_item) # Done via command later? No, visual feedback needed
+            self.current_item = DraggableRectItem(sp.x(), sp.y(), 0, 0, self.current_color, self.current_line_width)
             self.scene.addItem(self.current_item)
             
         elif self.current_tool == "arrow":
             from .tools import ArrowItem
-            self.current_item = ArrowItem(sp, sp)
+            self.current_item = ArrowItem(sp, sp, self.current_color, self.current_line_width)
+            self.scene.addItem(self.current_item)
+            
+        elif self.current_tool == "circle":
+            from .tools import CircleItem
+            self.current_item = CircleItem(sp.x(), sp.y(), 0, 0, self.current_color, self.current_line_width)
+            self.scene.addItem(self.current_item)
+            
+        elif self.current_tool == "line":
+            from .tools import LineItem
+            self.current_item = LineItem(sp.x(), sp.y(), sp.x(), sp.y(), self.current_color, self.current_line_width)
             self.scene.addItem(self.current_item)
             
         elif self.current_tool == "text":
             from .tools import TextItem
-            self.current_item = TextItem("Your Text Here", sp)
+            self.current_item = TextItem("Your Text Here", sp, self.current_color)
             
             # Push command immediately for one-click items
             command = AddItemCommand(self.scene, self.current_item)
@@ -119,15 +137,22 @@ class EditorCanvas(QGraphicsView):
         if hasattr(self, 'current_item') and self.current_item:
             sp = self.mapToScene(event.pos())
             
-            if self.current_tool in ["rectangle", "blur", "crop"]:
+            if self.current_tool in ["rectangle", "blur", "crop", "circle"]:
                 x = min(self.start_point.x(), sp.x())
                 y = min(self.start_point.y(), sp.y())
                 w = abs(self.start_point.x() - sp.x())
                 h = abs(self.start_point.y() - sp.y())
-                self.current_item.setRect(x, y, w, h)
+                
+                if self.current_tool == "circle":
+                    self.current_item.setRect(x, y, w, h)
+                else:
+                    self.current_item.setRect(x, y, w, h)
                 
             elif self.current_tool == "arrow":
                 self.current_item.update_arrow(self.start_point, sp)
+            
+            elif self.current_tool == "line":
+                self.current_item.setLine(self.start_point.x(), self.start_point.y(), sp.x(), sp.y())
                 
         super().mouseMoveEvent(event)
 
@@ -180,12 +205,8 @@ class EditorCanvas(QGraphicsView):
                 self.current_tool = "none"
                 self.setDragMode(QGraphicsView.ScrollHandDrag)
             
-            elif self.current_tool in ["rectangle", "arrow"]:
+            elif self.current_tool in ["rectangle", "arrow", "circle", "line"]:
                 # Push Command for the item we just drew
-                # To do this correctly with undo stack, the item must be removed first if we want 'redo' to add it.
-                # But we already added it for visual feedback.
-                # QUndoStack.push() executes redo(). 
-                # So we should remove it, then push (which adds it back).
                 self.scene.removeItem(self.current_item)
                 command = AddItemCommand(self.scene, self.current_item)
                 self.undo_stack.push(command)
