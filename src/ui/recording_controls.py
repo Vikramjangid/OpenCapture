@@ -12,57 +12,43 @@ class RecordingControls(QWidget):
         super().__init__()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setObjectName("recordingControls")
         
-        # Styles
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #333;
-                color: white;
-                border-radius: 10px;
-                border: 1px solid #555;
-            }
-            QPushButton {
-                background-color: transparent;
-                border: none;
-                border-radius: 5px;
-                padding: 5px;
-            }
-            QPushButton:hover {
-                background-color: #555;
-            }
-            QLabel {
-                font-weight: bold;
-                font-size: 14px;
-                padding: 0 10px;
-            }
-        """)
-
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 5, 10, 5)
+        layout.setContentsMargins(15, 8, 15, 8)
+        layout.setSpacing(12)
 
         # Draggable Grip (Label 'REC')
         self.lbl_rec = QLabel("REC")
-        self.lbl_rec.setStyleSheet("color: red;")
+        self.lbl_rec.setObjectName("importantErrorLabel") # Specialized label
+        self.lbl_rec.setStyleSheet("color: #ff5555; font-weight: bold;")
         layout.addWidget(self.lbl_rec)
 
         # Timer
         self.lbl_timer = QLabel("00:00")
+        self.lbl_timer.setObjectName("timerLabel")
         layout.addWidget(self.lbl_timer)
 
         # Pause Button
-        self.btn_pause = QPushButton("||")
-        self.btn_pause.setFixedSize(30, 30)
+        from PySide6.QtWidgets import QStyle
+        self.btn_pause = QPushButton()
+        self.btn_pause.setFixedSize(36, 36)
+        self.btn_pause.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
         self.btn_pause.setToolTip("Pause")
         self.btn_pause.clicked.connect(self.toggle_pause)
         layout.addWidget(self.btn_pause)
 
         # Stop Button
-        self.btn_stop = QPushButton("■")
-        self.btn_stop.setFixedSize(30, 30)
-        self.btn_stop.setStyleSheet("font-size: 16px; color: #ff5555;")
+        self.btn_stop = QPushButton()
+        self.btn_stop.setObjectName("importantError")
+        self.btn_stop.setFixedSize(36, 36)
+        self.btn_stop.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
         self.btn_stop.setToolTip("Stop")
         self.btn_stop.clicked.connect(self.on_stop)
         layout.addWidget(self.btn_stop)
+
+
+
 
         # Cancel Button
         # self.btn_cancel = QPushButton("X")
@@ -92,16 +78,19 @@ class RecordingControls(QWidget):
     def toggle_pause(self):
         self.is_paused = not self.is_paused
         
+        from PySide6.QtWidgets import QStyle
         if self.is_paused:
             self.timer.stop()
-            self.btn_pause.setText("▶")
+            self.btn_pause.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
             self.lbl_rec.setText("PAUSE")
-            self.lbl_rec.setStyleSheet("color: yellow;")
+            self.lbl_rec.setStyleSheet("color: yellow; font-weight: bold;")
         else:
             self.timer.start(1000)
-            self.btn_pause.setText("||")
+            self.btn_pause.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
             self.lbl_rec.setText("REC")
-            self.lbl_rec.setStyleSheet("color: red;")
+            self.lbl_rec.setStyleSheet("color: #ff5555; font-weight: bold;")
+
+
             
         self.pause_clicked.emit(self.is_paused)
 

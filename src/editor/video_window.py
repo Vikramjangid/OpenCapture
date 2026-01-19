@@ -58,14 +58,17 @@ class VideoEditorWindow(QMainWindow):
         # Frame Stepping
         step_layout = QHBoxLayout()
         self.btn_prev_frame = QPushButton("<")
+        self.btn_prev_frame.setObjectName("primaryInfo")
         self.btn_prev_frame.setToolTip("Previous Frame")
         self.btn_prev_frame.clicked.connect(lambda: self.step_frame(-1))
         step_layout.addWidget(self.btn_prev_frame)
         
         self.btn_next_frame = QPushButton(">")
+        self.btn_next_frame.setObjectName("primaryInfo")
         self.btn_next_frame.setToolTip("Next Frame")
         self.btn_next_frame.clicked.connect(lambda: self.step_frame(1))
         step_layout.addWidget(self.btn_next_frame)
+
         
         controls_layout.addLayout(step_layout)
         
@@ -83,29 +86,41 @@ class VideoEditorWindow(QMainWindow):
         edit_layout = QHBoxLayout()
         
         self.btn_save_mp4 = QPushButton("Export MP4 + Audio")
+        self.btn_save_mp4.setObjectName("primarySuccess")
+        self.btn_save_mp4.setFixedHeight(40)
         self.btn_save_mp4.clicked.connect(self.save_as_mp4)
         edit_layout.addWidget(self.btn_save_mp4)
         
         self.btn_save_gif = QPushButton("Save as GIF")
+        self.btn_save_gif.setObjectName("primaryInfo")
+        self.btn_save_gif.setFixedHeight(40)
         self.btn_save_gif.clicked.connect(self.save_as_gif)
         edit_layout.addWidget(self.btn_save_gif)
+
         
         layout.addLayout(edit_layout)
         
         trim_layout = QHBoxLayout()
         self.btn_set_start = QPushButton("Set Start")
+        self.btn_set_start.setObjectName("importantError")
+        self.btn_set_start.setFixedHeight(40)
         self.btn_set_start.clicked.connect(self.set_start_trim)
         trim_layout.addWidget(self.btn_set_start)
         
         self.lbl_trim_start = QLabel("Start: 0s")
+        self.lbl_trim_start.setObjectName("sectionHeader")
         trim_layout.addWidget(self.lbl_trim_start)
         
         self.btn_set_end = QPushButton("Set End")
+        self.btn_set_end.setObjectName("importantError")
+        self.btn_set_end.setFixedHeight(40)
         self.btn_set_end.clicked.connect(self.set_end_trim)
         trim_layout.addWidget(self.btn_set_end)
 
         self.lbl_trim_end = QLabel("End: Full")
+        self.lbl_trim_end.setObjectName("sectionHeader")
         trim_layout.addWidget(self.lbl_trim_end)
+
         
         self.trim_start_ms = 0
         self.trim_end_ms = -1 # -1 means end
