@@ -34,6 +34,7 @@ class RecordingControls(QWidget):
         self.btn_pause = QPushButton()
         self.btn_pause.setFixedSize(36, 36)
         self.btn_pause.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+
         self.btn_pause.setToolTip("Pause")
         self.btn_pause.clicked.connect(self.toggle_pause)
         layout.addWidget(self.btn_pause)
