@@ -49,7 +49,7 @@ class RecorderManager(QObject):
                                             fps=fps,
                                             webcam_enabled=input_webcam, 
                                             cursor_enabled=capture_cursor)
-        self.video_recorder.finished.connect(self._on_video_finished)
+
         
         # Start Audio
         if input_mic:
@@ -105,9 +105,14 @@ class RecorderManager(QObject):
 
         # Stop Video Asynchronously
         if self.video_recorder:
-            # Connect the finished signal to the final cleanup
+            # Connect the finished signal to the final cleanup (Connect ONCE)
+            try:
+                self.video_recorder.finished.disconnect(self._on_video_finished)
+            except:
+                pass
             self.video_recorder.finished.connect(self._on_video_finished)
             self.video_recorder.stop()
+
         else:
             self._on_video_finished()
 

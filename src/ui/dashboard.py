@@ -16,8 +16,9 @@ class ImageCaptureWidget(QWidget):
 
         # Header
         header = QLabel("Image Capture")
-        header.setStyleSheet("font-size: 18px; font-weight: bold; color: #555;")
+        header.setObjectName("sectionHeader")
         layout.addWidget(header, alignment=Qt.AlignCenter)
+
 
         # Capture Region Button
         self.btn_capture = QPushButton("Capture Region")
@@ -58,8 +59,9 @@ class VideoCaptureWidget(QWidget):
 
         # Header
         header = QLabel("Video Screen Recorder")
-        header.setStyleSheet("font-size: 18px; font-weight: bold; color: #555;")
+        header.setObjectName("sectionHeader")
         layout.addWidget(header, alignment=Qt.AlignCenter)
+
 
         # Video Options Group
         from PySide6.QtWidgets import QGroupBox, QCheckBox
@@ -126,25 +128,27 @@ class Dashboard(QMainWindow):
         
         # Header
         header = QLabel("OpenCapture")
-        header.setStyleSheet("font-size: 24px; font-weight: bold; color: #333; margin-bottom: 10px;")
+        header.setObjectName("dashboardHeader")
         main_layout.addWidget(header, alignment=Qt.AlignCenter)
+
 
         # Tabs
         self.tabs = QTabWidget()
-        self.tabs.setStyleSheet("QTabWidget::pane { border: 1px solid #C2C7CB; } QTabBar::tab { height: 30px; width: 150px; }")
+
         
         self.image_tab = ImageCaptureWidget(self)
         self.video_tab = VideoCaptureWidget(self)
         
-        self.tabs.addTab(self.image_tab, "Image Capture")
-        self.tabs.addTab(self.video_tab, "Video Record")
+        self.tabs.addTab(self.image_tab, self.style().standardIcon(QStyle.SP_DialogSaveButton), "Image Capture")
+        self.tabs.addTab(self.video_tab, self.style().standardIcon(QStyle.SP_MediaPlay), "Video Record")
         
         main_layout.addWidget(self.tabs)
 
         # Recent Captures Label
         recent_label = QLabel("Recent Captures")
-        recent_label.setStyleSheet("font-size: 14px; font-weight: bold; margin-top: 10px; color: #aaa;")
+        recent_label.setObjectName("sectionHeader")
         main_layout.addWidget(recent_label)
+
 
         # List for recent files
         self.recent_list = QListWidget()

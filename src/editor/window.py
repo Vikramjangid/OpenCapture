@@ -6,7 +6,7 @@ from .canvas import EditorCanvas
 class EditorWindow(QMainWindow):
     def __init__(self, pil_image=None):
         super().__init__()
-        self.setWindowTitle("Snagit Editor - Developed by : Vikram Jangid (vikramjangid11@gmail.com)")
+        self.setWindowTitle("OpenCapture Editor - Developed by : Vikram Jangid (vikramjangid11@gmail.com)")
         self.resize(1200, 800)
         
         # Set Window Icon
@@ -61,8 +61,19 @@ class EditorWindow(QMainWindow):
         # Drawing Tools
         self.add_tool_action(toolbar, "Arrow", "arrow")
         self.add_tool_action(toolbar, "Rectangle", "rectangle")
+        self.add_tool_action(toolbar, "Circle", "circle")
+        self.add_tool_action(toolbar, "Line", "line")
         self.add_tool_action(toolbar, "Text", "text")
         self.add_tool_action(toolbar, "Blur", "blur")
+        
+        toolbar.addSeparator()
+        
+        # Color Picker
+        # Color Picker
+        self.color_action = QAction("Color", self)
+        self.color_action.triggered.connect(self.open_color_picker)
+        toolbar.addAction(self.color_action)
+        self.update_color_icon(self.canvas.current_color)
         
         toolbar.addSeparator()
         
@@ -107,7 +118,21 @@ class EditorWindow(QMainWindow):
         dlg = ResizeDialog(int(rect.width()), int(rect.height()), self)
         if dlg.exec():
             w, h = dlg.get_result()
+            w, h = dlg.get_result()
             self.canvas.resize_canvas(w, h)
+
+    def open_color_picker(self):
+        from PySide6.QtWidgets import QColorDialog
+        color = QColorDialog.getColor(self.canvas.current_color, self, "Select Color")
+        if color.isValid():
+            self.canvas.set_drawing_color(color)
+            self.update_color_icon(color)
+
+    def update_color_icon(self, color):
+        from PySide6.QtGui import QPixmap, QPainter
+        pixmap = QPixmap(16, 16)
+        pixmap.fill(color)
+        self.color_action.setIcon(QIcon(pixmap))
 
 
     def save_image(self):
